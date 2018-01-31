@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    kompose.cmd: kompose --provider openshift convert
+    kompose.version: 1.8.0 (0c0c027)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: rabbit2
+  name: rabbit2
+spec:
+  replicas: 1
+  selector:
+    io.kompose.service: rabbit2
+  strategy:
+    resources: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: rabbit2
+    spec:
+      containers:
+      - env:
+        - name: CLUSTERED
+          value: "true"
+        - name: CLUSTER_WITH
+          value: rabbit1
+        - name: RAM_NODE
+          value: "true"
+        image: 'containers.cisco.com/jaganaga/rabbitnode'
+        name: rabbit2
+        ports:
+        - containerPort: 1883
+        - containerPort: 5672
+        - containerPort: 8883
+        - containerPort: 15672
+        resources: {}
+        securityContext:
+          runAsUser: 999
+      restartPolicy: Always
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - rabbit2
+      from:
+        kind: ImageStreamTag
+        name: rabbit1:latest
+    type: ImageChange
+status: {}

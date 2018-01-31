@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose --provider openshift convert
+    kompose.version: 1.8.0 (0c0c027)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: rabbit2
+  name: rabbit2
+spec:
+  ports:
+  - name: "1884"
+    port: 1884
+    targetPort: 1883
+  - name: "5673"
+    port: 5673
+    targetPort: 5672
+  - name: "8884"
+    port: 8884
+    targetPort: 8883
+  - name: "15673"
+    port: 15673
+    targetPort: 15672
+  selector:
+    io.kompose.service: rabbit2
+status:
+  loadBalancer: {}
